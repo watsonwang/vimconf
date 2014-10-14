@@ -222,6 +222,7 @@ Bundle 'gmarik/vundle'
 
 Bundle 'Valloric/YouCompleteMe'
 Bundle 'scrooloose/syntastic'
+Bundle 'The-NERD-Commenter'
 
 filetype indent plugin on                 " 安装完后打开文件类型
 
@@ -272,4 +273,22 @@ let g:syntastic_cpp_compiler_options = '-std=c++11 -stdlib=libstdc++'
 ""whether to show balloons
 let g:syntastic_enable_balloons = 1
 
+"nerdcommenter 
+"我主要用于C/C++代码注释(其它的也行)
+" 以下为插件默认快捷键，其中的说明是以C/C++为例的，其它语言类似
+" <Leader>ci 以每行一个 /* */ 注释选中行(选中区域所在行)，再输入则取消注释:原先注释的地方反注释，未注释的地方注释
+" <Leader>cm 以一个 /* */ 注释选中行(选中区域所在行)，再输入则称重复注释
+" <Leader>cc 以每行一个 /* */ 注释选中行或区域，再输入则称重复注释
+" <Leader>cu 取消选中区域(行)的注释，选中区域(行)内至少有一个 /* */
+" <Leader>ca 在/*...*/与//这两种注释方式中切换（其它语言可能不一样了）
+" <Leader>cA 行尾注释
+"
+" <Leader>cy 注释前复制。即注释以后用p可以贴出原先内容。
+" <Leader>c$ 从当前字符注释到行尾。
+" <Leader>cl cb 左对齐注释，两端对齐的注释
+" <Leader>cs 性感的注释方式
+" <Leader>c <space> 由第一行决定是行为是注释还是反注释
+" <Leader>c
+let NERDSpaceDelims = 1
+"在左注释符之后，右注释符之前留有空格
 
