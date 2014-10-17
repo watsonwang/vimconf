@@ -1,10 +1,13 @@
 " 配置多语言环境,解决中文乱码问题
 if has("multi_byte") 
     " UTF-8 编码 
-    set encoding=utf-8 
-    set termencoding=utf-8 
+	"set fileencodings=ucs-bom,utf-8,gb2312,ucs-bom,euc-cn,euc-tw,gb18030,gbk,cp936
+	set fileencodings=ucs-bom,utf-8,utf-16,gbk,big5,gb18030,latin1
+	set encoding=utf-8 
+    " set encoding=gb2312
+	set termencoding=utf-8 
     set formatoptions+=mM 
-    set fencs=utf-8,gbk 
+	set fencs=utf-8,gbk 
     if v:lang =~? '^/(zh/)/|/(ja/)/|/(ko/)' 
         set ambiwidth=double 
     endif 
@@ -91,7 +94,7 @@ map <F5> :!ctags --recurse=yes --c++-kinds=+p --fields=+ilaS --extra=+q .<CR><CR
 imap <F5> <ESC>:!ctags --recurse=yes --c++-kinds=+p --fields=+ilaS --extra=+q .<CR><CR> :TlistUpdate<CR>
 set tags=tags
 set tags+=./tags "add current directory's generated tags file
-set tags+=~/tags/system.tags
+"set tags+=~/tags/system.tags
 
 
 "-- omnicppcomplete setting --
@@ -223,6 +226,23 @@ Bundle 'gmarik/vundle'
 Bundle 'Valloric/YouCompleteMe'
 Bundle 'scrooloose/syntastic'
 Bundle 'The-NERD-Commenter'
+Bundle "MarcWeber/vim-addon-mw-utils"
+Bundle "tomtom/tlib_vim"
+Bundle "garbas/vim-snipmate"
+Bundle 'SirVer/ultisnips'
+Bundle "honza/vim-snippets"
+Bundle "mbbill/fencview"
+
+"Trigger configuration. Do not use <tab> if you use
+"https://github.com/Valloric/YouCompleteMe.
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+
+" If you want :UltiSnipsEdit to split your window.
+let g:UltiSnipsEditSplit="vertical"
+
+
 
 filetype indent plugin on                 " 安装完后打开文件类型
 
@@ -260,6 +280,10 @@ nmap <C-g> :YcmCompleter GoToDefinitionElseDeclaration nmap <C-R>=expand("<cword
 let g:ycm_server_use_vim_stdout = 1
 let g:ycm_server_log_level = 'debug'
 
+"set YouCompleteMe trigger key 
+"let g:ycm_key_list_select_completion = ['<c-n>', '<Down>']
+"let g:ycm_key_list_previous_completion = ['<c-p>', '<Up>']
+
 """"""""""syntastic""""""""""""
 let g:syntastic_check_on_open = 1
 let g:syntastic_cpp_include_dirs = ['/usr/include/']
@@ -291,4 +315,73 @@ let g:syntastic_enable_balloons = 1
 " <Leader>c
 let NERDSpaceDelims = 1
 "在左注释符之后，右注释符之前留有空格
+
+
+
+
+
+" ino <silent> <c-j> <c-r>=TriggerSnippet()<cr> 
+" ino <silent> <tab> <c-r>=TriggerSnippet()<cr> 
+" snor <silent> <c-j> <esc>i<right><c-r>=TriggerSnippet()<cr> 
+" snor <silent> <tab> <esc>i<right><c-r>=TriggerSnippet()<cr>
+" imap <S-TAB> <Plug>snipMateNextOrTrigger
+" nmap <S-TAB> <Plug>snipMateNextOrTrigger
+
+
+  function! g:UltiSnips_Complete()
+	  call UltiSnips#ExpandSnippet()
+	  if g:ulti_expand_res == 0
+		  if pumvisible()
+			  return "\<C-n>"
+		  else
+			  call UltiSnips#JumpForwards()
+			  if g:ulti_jump_forwards_res == 0
+				 return "\<TAB>"
+			  endif
+		  endif
+	  endif
+	  return ""
+  endfunction
+
+  au BufEnter * exec "inoremap <silent> " . g:UltiSnipsExpandTrigger . " <C-R>=g:UltiSnips_Complete()<cr>"
+  let g:UltiSnipsJumpForwardTrigger="<tab>"
+  let g:UltiSnipsListSnippets="<c-e>"
+  " this mapping Enter key to <C-y> to chose the current highlight item 
+  " and close the selection list, same as other IDEs.
+  " CONFLICT with some plugins like tpope/Endwise
+  inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+
+
+ let g:ycm_key_list_select_completion = ['<C-n>', '<Down>']
+ let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
+ let g:SuperTabDefaultCompletionType = '<C-n>'
+ 
+ " better key bindings for UltiSnipsExpandTrigger
+ let g:UltiSnipsExpandTrigger = "<tab>"
+ let g:UltiSnipsJumpForwardTrigger = "<tab>"
+ let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
+
+
+ """""""""""""""""""""""""
+ " echofunc 
+ """""""""""""""""""""""""
+ """ 按键"Alt+-"和"Alt+="向前和向后翻页
+  let g:EchoFuncKeyNext='<C-S-n>' 
+  let g:EchoFuncKeyPrev='<C-S-p>'
+  let g:EchoFuncAutoStartBalloonDeclaration = 1
+ 
+  if(v:version >= 700)
+	  set laststatus=2
+	  if has('statusline')
+		  let g:EchoFuncShowOnStatus=1
+		  set statusline=%<%f\ %{EchoFuncGetStatusLine()}\
+"		  %h%m%r%=%-10.(%l,%c%V%)\ %P(%L)\ 
+	  endif
+  endif
+ 
+                              
+  "FiewView 文件编码检测插件配置,
+  "不自动检测，有编码问题时手工执行:FencAutoDectect :FencView 转换,或者 FencManualEncoding设置
+  let g:fencview_autodetect=0
+  " let g:fencview_auto_patterns='*'
 
